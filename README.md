@@ -64,6 +64,8 @@ Next.js 14 (App Router, TypeScript), Tailwind, Supabase (Postgres, server-side a
 ## Tests
 `npm test` runs 43 tests: retrieval on 12 answerable and 10 out-of-scope questions, the "never guess" gate, redaction, the model step with a mocked endpoint (including that unknown questions never call it), the admin cookie, login throttling, origin checks and the cron guard.
 
+`npm run check:exposure` connects with the public key only and confirms it can neither read nor write any Sidekick table.
+
 ## Limits
 The FAQ is small, and matching is keyword-based, not semantic. A paraphrase that shares no words with an entry will be treated as unknown, which is the safe failure, and the owner queue exists to close those gaps. The language-model path is written and tested against a mock, but this repository does not ship a key, so check it with yours.
 
