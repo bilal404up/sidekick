@@ -4,6 +4,16 @@ A demo support assistant for a fictional shop (Fernbrook Garden Supply). It answ
 
 This is a demo. The shop, its 24 FAQ entries and the sample conversations are invented.
 
+## Screenshots
+
+![The demo page with the assistant answering a known question and declining an unknown one](docs/screenshots/02-home-chat.png)
+
+![The owner admin: questions the assistant could not answer, with a field to add the answer](docs/screenshots/03-admin-unanswered.png)
+
+![A conversation open in the admin](docs/screenshots/04-admin-conversations.png)
+
+![The one-line embed on a sample third-party page](docs/screenshots/06-embed-on-third-party-page.png)
+
 ## What it does
 - **Answers from the FAQ.** Each reply shows which entry it came from.
 - **Does not guess.** If too few of the question's words appear in the best entry, it says it does not know. That path never reaches a language model, so it costs nothing.
