@@ -15,8 +15,8 @@ export default function Home() {
         <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <span className="font-display text-[22px] leading-none text-ink">sidekick</span>
           <nav aria-label="Main" className="flex items-center gap-5 text-[15px]">
-            <a href="#install" className="hover:underline">Add it to a site</a>
-            <a href="#how" className="hover:underline">How it decides</a>
+            <a href="#install" className="inline-block py-2 hover:underline">Add it to a site</a>
+            <a href="#how" className="inline-block py-2 hover:underline">How it decides</a>
             <AdminEntry demo={demo} className="btn-secondary" />
           </nav>
         </div>

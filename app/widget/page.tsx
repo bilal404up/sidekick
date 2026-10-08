@@ -8,6 +8,7 @@ export const metadata = { title: "Sidekick chat" };
 export default function WidgetPage() {
   return (
     <div className="h-screen p-0">
+      <h1 className="sr-only">Sidekick chat</h1>
       <ChatPanel llmOn={llmConfigFromEnv() !== null} className="h-full rounded-none border-0" />
     </div>
   );
