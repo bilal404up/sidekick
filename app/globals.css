@@ -4,12 +4,14 @@
 
 :root {
   color-scheme: light;
+  /* One family for everything. Headings use the same face at a heavier weight. */
+  --font-display: var(--font-body);
 }
 
 html,
 body {
-  background: #e3d3ae;
-  color: #1d1b17;
+  background: #fafaf7;
+  color: #15181b;
   font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -17,388 +19,164 @@ body {
 h1,
 h2,
 h3 {
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 400;
-  letter-spacing: -0.005em;
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
 }
 
 *:focus-visible {
-  outline: 2px solid #1d1b17;
+  outline: 2px solid #15181b;
   outline-offset: 2px;
 }
 
-/* On oak surfaces the ring switches to brass (5.9:1 against cabinet). */
-.on-cabinet *:focus-visible {
-  outline-color: #c9a35b;
-}
-
 ::selection {
-  background: #c9a35b;
-  color: #1d1b17;
+  background: #cde9d8;
+  color: #15181b;
 }
 
 @layer components {
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 text-[15px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 text-[15px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-cabinet text-card hover:bg-cabinet-raised;
+    @apply btn bg-ink text-white hover:bg-[#2a2f34];
   }
   .btn-secondary {
-    @apply btn border border-ink bg-card text-ink hover:bg-kraft;
+    @apply btn border border-rule-strong bg-surface text-ink hover:border-ink;
   }
-  .btn-brass {
-    @apply btn bg-brass text-ink hover:bg-brass-light;
+  .btn-found {
+    @apply btn bg-found text-white hover:bg-found-dark;
+  }
+  .btn-quiet {
+    @apply inline-flex min-h-11 items-center rounded-md px-2 text-[14px] font-semibold text-ink-muted transition-colors hover:text-ink disabled:opacity-50;
   }
   .field {
-    @apply w-full rounded-md border border-ink-subtle bg-card px-3 text-[16px] text-ink placeholder:text-ink-subtle;
+    @apply w-full rounded-md border border-rule-strong bg-surface px-3 text-[16px] text-ink placeholder:text-ink-subtle hover:border-ink-muted;
   }
   .chip {
-    @apply inline-flex min-h-11 flex-col items-start justify-center rounded-md border border-ink-subtle bg-card px-3 py-2 text-left text-[15px] leading-5 text-ink hover:border-ink disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex min-h-11 items-center rounded-full border border-rule-strong bg-surface px-4 text-left text-[14px] leading-5 text-ink hover:border-ink disabled:cursor-not-allowed disabled:opacity-50;
   }
-  .request-slip {
-    @apply rounded-md rounded-br-xs bg-cabinet px-3 py-2 text-[15px] leading-[22px] text-card;
+  .panel {
+    @apply rounded-xl border border-rule bg-surface shadow-panel;
   }
-
-  /* Index card: a stack of cards, the top one with a tab. */
-  .index-card {
-    position: relative;
-    background: #fffdf6;
-    border: 1px solid #d9cbb0;
-    border-radius: 2px 8px 8px 8px;
-    padding: 12px 16px 14px;
-    box-shadow:
-      0 1px 0 #d9cbb0,
-      0 3px 0 -1px #fffdf6,
-      0 4px 0 -1px #d9cbb0,
-      0 14px 22px -16px rgba(58, 40, 25, 0.55);
+  .dot {
+    @apply inline-block h-2 w-2 shrink-0 rounded-full;
   }
-  .card-tab {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    height: 26px;
-    margin-left: 14px;
-    margin-bottom: -1px;
-    padding: 0 10px;
-    border: 1px solid #d9cbb0;
-    border-bottom: 0;
-    border-radius: 6px 6px 0 0;
-    background: #fffdf6;
-    font-family: var(--font-card), "Courier New", monospace;
-    font-size: 12px;
-    line-height: 1;
-    color: #4a443a;
+  .mark {
+    @apply rounded-[3px] bg-found-mark px-[2px] text-ink;
   }
-  /* The red header line of an index card, edge to edge. */
-  .card-margin {
-    height: 1px;
-    margin: 0 -16px;
-    background: rgba(179, 38, 30, 0.55);
+  .typing-dot {
+    @apply inline-block h-1.5 w-1.5 rounded-full bg-ink-subtle;
   }
-  /* Blue ruled lines. Hard-stop line pattern, no colour fades. Lines sit under 22px text lines. */
-  .ruled-body {
-    padding-top: 11px;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 21px,
-      rgba(169, 190, 220, 0.6) 21px,
-      rgba(169, 190, 220, 0.6) 22px
-    );
-    background-origin: content-box;
-    background-clip: content-box;
+  .entry[data-active="true"] {
+    background: #e7f3ec;
+    box-shadow: inset 3px 0 0 #117a4a;
+    color: #0c5c37;
+    font-weight: 600;
   }
-
-  /* Rubber stamp with a worn ink texture. */
-  .stamp {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 9px 4px;
-    font-family: var(--font-card), "Courier New", monospace;
-    font-weight: 700;
-    font-size: 13px;
-    line-height: 1;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    border: 2px solid currentColor;
-    border-radius: 4px;
-    box-shadow: inset 0 0 0 2px #fffdf6, inset 0 0 0 3px currentColor;
-    transform: rotate(-8deg);
-    opacity: 0.92;
-    mix-blend-mode: multiply;
-    pointer-events: none;
-    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='70'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.4 1.65'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='70'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.4 1.65'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  }
-  .stamp-lg {
-    padding: 6px 11px 5px;
-    font-size: 15px;
-  }
-  .stamp-mini {
-    padding: 2px 4px 1px;
-    font-size: 10px;
-    border-width: 1.5px;
-    box-shadow: none;
-    transform: rotate(-6deg);
-  }
-
-  /* Carbon copy that slides out from under a blank card. */
-  .carbon-slip {
-    position: relative;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    margin: -2px 10px 0 16px;
-    padding: 10px 12px;
-    background: #d6c294;
-    border-top: 2px dashed #8c6a2c;
-    border-radius: 0 0 6px 6px;
-    font-size: 14px;
-    line-height: 20px;
-    color: #1d1b17;
-  }
-
-  /* Inside of the open drawer. */
-  .drawer-inside {
-    background: #e3d3ae;
-    box-shadow: inset 0 10px 12px -10px rgba(58, 40, 25, 0.45);
-  }
-
-  /* Brass label holder with two screws. */
-  .label-holder {
-    position: relative;
-    border: 1.5px solid #c9a35b;
-    border-radius: 3px;
-    padding: 4px 18px;
-    background: rgba(0, 0, 0, 0.14);
-  }
-  .label-holder::before,
-  .label-holder::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    width: 4px;
-    height: 4px;
-    margin-top: -2px;
-    border-radius: 50%;
-    background: #c9a35b;
-  }
-  .label-holder::before {
-    left: 6px;
-  }
-  .label-holder::after {
-    right: 6px;
-  }
-
-  /* Catalogue wall drawers on the hero. */
-  .drawer {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    height: 58px;
-    border-radius: 4px;
-    background: #4a3421;
-    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    transition: background-color 200ms, box-shadow 200ms;
-  }
-  .drawer-label {
-    border: 1px solid #8c6a2c;
-    border-radius: 2px;
-    padding: 2px 6px;
-    font-family: var(--font-card), "Courier New", monospace;
-    font-size: 11px;
-    line-height: 13px;
-    color: #d9cbb0;
-    text-align: center;
-    white-space: nowrap;
-  }
-  .drawer-pull {
-    width: 22px;
-    height: 5px;
-    border-radius: 0 0 6px 6px;
-    background: #8c6a2c;
-  }
-  .drawer.is-pulled {
-    background: #5e4530;
-    box-shadow: inset 0 0 0 1.5px #c9a35b, 0 12px 18px -8px rgba(0, 0, 0, 0.6);
-  }
-  .drawer.is-pulled .drawer-label {
-    color: #fffdf6;
-    border-color: #c9a35b;
-  }
-  .drawer.is-pulled .drawer-pull {
-    background: #c9a35b;
-  }
-  .drawer-slip {
-    position: absolute;
-    top: -5px;
-    left: 50%;
-    width: 28px;
-    height: 12px;
-    margin-left: -14px;
-    background: #fffdf6;
-    border: 1px solid #d9cbb0;
-    border-radius: 1px;
-    transform: rotate(-5deg);
-  }
-
-  .legend-key {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    height: 22px;
-    min-width: 44px;
-    padding: 0 6px;
-    border-radius: 3px;
-    background: #fffdf6;
-    font-size: 12px;
-    color: #1d1b17;
-  }
-
-  /* Three tiny cards riffling while it searches. */
-  .riffle {
-    display: inline-flex;
-    padding-left: 4px;
-  }
-  .riffle > span {
-    display: block;
-    width: 12px;
-    height: 16px;
-    margin-left: -4px;
-    border: 1px solid #645d51;
-    border-radius: 2px;
-    background: #fffdf6;
+  .is-new {
+    background: rgba(231, 243, 236, 0.6);
+    box-shadow: inset 3px 0 0 #117a4a;
   }
 }
 
-/* Motion. Every keyframe animates from an offset state to the element's own resting style,
-   so with motion off, each screen is already in its finished state. */
-@keyframes card-pull {
-  from {
-    opacity: 0;
-    transform: translateY(22px) rotate(-1.2deg);
-  }
-}
-@keyframes card-settle {
-  0%,
-  100% {
-    transform: none;
-  }
-  35% {
-    transform: translateY(2px) scale(0.996);
-  }
-}
-@keyframes stamp-thunk {
-  0% {
-    opacity: 0;
-    transform: scale(1.8) rotate(-14deg);
-  }
-  70% {
-    opacity: 0.95;
-    transform: scale(0.95) rotate(-7deg);
-  }
-  100% {
-    opacity: 0.92;
-    transform: rotate(-8deg);
-  }
-}
-@keyframes slip-out {
-  from {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-}
-@keyframes request-in {
-  from {
-    opacity: 0;
-    transform: translateX(14px);
-  }
-}
-@keyframes riffle {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-5px);
-  }
-}
-@keyframes wall-in {
+/* Every keyframe animates from an offset state to the element's own resting style,
+   so with motion off each screen is already finished. */
+@keyframes rise {
   from {
     opacity: 0;
     transform: translateY(8px);
   }
 }
-@keyframes drawer-in {
+@keyframes fade {
   from {
     opacity: 0;
-    transform: translateY(18px);
   }
 }
-@keyframes slip-pop {
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+@keyframes bump {
+  40% {
+    transform: scale(1.25);
+  }
+}
+@keyframes slide-out {
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes pulse-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+@keyframes hero-in {
   from {
     opacity: 0;
-    transform: translateY(8px) rotate(-5deg);
+    transform: translateY(14px);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .anim-card-pull {
-    animation: card-pull 260ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  .anim-rise {
+    animation: rise 240ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
   }
-  .anim-card-settle {
-    animation: card-settle 180ms ease-out 430ms backwards;
+  .anim-fade {
+    animation: fade 200ms ease-out backwards;
   }
-  .anim-stamp {
-    animation: stamp-thunk 220ms cubic-bezier(0.3, 1.4, 0.5, 1) 240ms backwards;
+  .anim-draw {
+    animation: draw 480ms cubic-bezier(0.4, 0, 0.2, 1) backwards;
   }
-  .anim-slip {
-    animation: slip-out 240ms cubic-bezier(0.2, 0.8, 0.2, 1) 520ms backwards;
+  .anim-pop {
+    animation: pop 260ms cubic-bezier(0.3, 1.4, 0.5, 1) backwards;
   }
-  .anim-slip-late {
-    animation: slip-out 240ms cubic-bezier(0.2, 0.8, 0.2, 1) 700ms backwards;
+  .anim-bump {
+    animation: bump 260ms ease-out;
   }
-  .anim-request {
-    animation: request-in 180ms ease-out backwards;
+  .anim-slide-out {
+    animation: slide-out 220ms ease-in forwards;
   }
-  .riffle > span {
-    animation: riffle 900ms ease-in-out infinite;
+  .anim-hero > * {
+    animation: hero-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 90ms);
   }
-  .riffle > span:nth-child(2) {
-    animation-delay: 120ms;
+  .typing .typing-dot {
+    animation: pulse-dot 1.2s infinite;
   }
-  .riffle > span:nth-child(3) {
-    animation-delay: 240ms;
+  .typing .typing-dot:nth-child(2) {
+    animation-delay: 0.15s;
   }
-  .anim-wall > * {
-    animation: wall-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
-    animation-delay: calc(var(--i, 0) * 35ms + 60ms);
-  }
-  .anim-drawer-in {
-    animation: drawer-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1) 420ms backwards;
-  }
-  .anim-slip-pop {
-    animation: slip-pop 240ms cubic-bezier(0.3, 1.4, 0.5, 1) backwards;
-  }
-  .drawer {
-    transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 200ms, box-shadow 200ms;
-  }
-  .drawer.is-pulled {
-    transform: translateY(-4px) scale(1.05);
+  .typing .typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
   }
   .chip {
     transition: transform 150ms ease-out, border-color 150ms;
   }
   .chip:hover:not(:disabled) {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+  }
+  .entry {
+    transition: background-color 200ms, box-shadow 200ms, color 200ms;
   }
 }
 
@@ -407,6 +185,7 @@ h3 {
   *::before,
   *::after {
     animation: none !important;
-    transition-duration: 0.01ms !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
 }
