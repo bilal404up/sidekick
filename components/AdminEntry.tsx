@@ -4,7 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 /** In demo mode this opens the admin without a password. Otherwise it links to the login page. */
-export function AdminEntry({ demo, className = "btn-primary" }: { demo: boolean; className?: string }) {
+export function AdminEntry({
+  demo,
+  className = "btn-primary",
+  errorClassName = "text-error",
+}: {
+  demo: boolean;
+  className?: string;
+  errorClassName?: string;
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +41,7 @@ export function AdminEntry({ demo, className = "btn-primary" }: { demo: boolean;
         {busy ? "Opening" : demo ? "Open the demo admin" : "Owner login"}
       </button>
       {error && (
-        <span role="alert" className="text-[13px] leading-[18px] text-error">
+        <span role="alert" className={`text-[13px] leading-[18px] ${errorClassName}`}>
           {error}
         </span>
       )}

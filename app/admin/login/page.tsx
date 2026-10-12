@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SidekickMark } from "@/components/SidekickMark";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -30,26 +31,59 @@ export default function AdminLogin() {
   }
 
   return (
-    <main className="mx-auto max-w-[420px] px-4 py-20">
-      <h1 className="text-[28px] leading-[34px]">Owner login</h1>
-      <p className="mt-2 text-[15px] leading-[22px] text-ink-muted">Sign in to review conversations and add answers to the FAQ.</p>
-      <form onSubmit={submit} className="mt-6 space-y-4">
-        <div>
-          <label htmlFor="pw" className="mb-1 block text-[14px] font-semibold">Password</label>
-          <input id="pw" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} className="field h-10" aria-invalid={error ? true : undefined} aria-describedby={error ? "pw-error" : undefined} />
-          {error && (
-            <p id="pw-error" role="alert" className="mt-1 text-[13px] leading-[18px] text-error">
-              {error}
-            </p>
-          )}
+    <main className="min-h-screen bg-cabinet px-4 py-14 sm:py-24">
+      <div className="mx-auto max-w-[440px]">
+        <p className="on-cabinet mb-8">
+          <a href="/" className="inline-flex min-h-11 items-center gap-2 font-display text-[24px] leading-none text-card">
+            <SidekickMark className="text-brass" />
+            sidekick
+          </a>
+        </p>
+
+        <div className="anim-card-pull">
+          <div className="card-tab">Staff only</div>
+          <div className="index-card">
+            <div className="min-h-[34px] pb-2">
+              <h1 className="text-[26px] leading-[30px] text-ink">Owner login</h1>
+            </div>
+            <div className="card-margin" aria-hidden="true" />
+            <div className="ruled-body">
+              <p className="text-[15px] leading-[22px] text-ink-muted">Sign in to read conversations and write answers for the FAQ.</p>
+              <form onSubmit={submit} className="mt-[22px] space-y-4">
+                <div>
+                  <label htmlFor="pw" className="mb-1 block text-[14px] font-bold leading-[22px] text-ink">
+                    Password
+                  </label>
+                  <input
+                    id="pw"
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="field h-11"
+                    aria-invalid={error ? true : undefined}
+                    aria-describedby={error ? "pw-error" : undefined}
+                  />
+                  {error && (
+                    <p id="pw-error" role="alert" className="mt-1 text-[13px] leading-[18px] text-error">
+                      {error}
+                    </p>
+                  )}
+                </div>
+                <button type="submit" disabled={busy || password.length === 0} className="btn-primary w-full">
+                  {busy ? "Signing in" : "Sign in"}
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
-        <button type="submit" disabled={busy || password.length === 0} className="btn-primary w-full">
-          {busy ? "Signing in" : "Sign in"}
-        </button>
-      </form>
-      <p className="mt-6 text-[14px] leading-5 text-ink-subtle">
-        <a href="/" className="underline underline-offset-4">Back to the demo</a>
-      </p>
+
+        <p className="on-cabinet mt-6 text-[14px] leading-5">
+          <a href="/" className="inline-flex min-h-11 items-center text-card-dim underline underline-offset-4 hover:text-card">
+            Back to the demo
+          </a>
+        </p>
+      </div>
     </main>
   );
 }

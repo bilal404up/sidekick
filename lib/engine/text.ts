@@ -26,10 +26,25 @@ export function tokens(text: string): string[] {
     .map(stem);
 }
 
+/** Small talk in the help desk's voice. Short, warm, and always pointing back to the help file. */
 const SMALL_TALK: Array<{ test: RegExp; reply: string }> = [
-  { test: /^(hi|hello|hey|hiya|good (morning|afternoon|evening))\b[\s!.?]*$/i, reply: "Hi, I'm the Fernbrook shop assistant. Ask me about shipping, returns, orders or plant care." },
-  { test: /^(thanks|thank you|thx|cheers)\b[\s!.?a-z]*$/i, reply: "You're welcome. Ask me anything else about the shop." },
-  { test: /^(bye|goodbye|see you)\b[\s!.?a-z]*$/i, reply: "Goodbye. I'm here whenever you have another question." },
+  {
+    test: /^(hi|hello|hey|hiya|good (morning|afternoon|evening))\b[\s!.?]*$/i,
+    reply: "Hello. I'm the Fernbrook help desk, and I only answer from the shop's help file. Ask me about shipping, returns, orders or plant care.",
+  },
+  {
+    test: /^(thanks|thank you|thx|cheers)\b[\s!.?a-z]*$/i,
+    reply: "You're welcome. Anything else from the help file?",
+  },
+  {
+    test: /^(bye|goodbye|see you)\b[\s!.?a-z]*$/i,
+    reply: "Goodbye, and thanks for stopping by. The help file is here whenever you need it.",
+  },
+  {
+    test: /^(?:(?:who|what) are you|are you (?:an? )?(?:real )?(?:bot|robot|human|person|ai|machine)|are you real|is this (?:an? )?(?:real )?(?:bot|robot|person|human|ai))\b[\s!.?]*$/i,
+    reply:
+      "I'm an automated help desk for Fernbrook Garden Supply, not a person. I look things up in the shop's help file and show you the card I used. If something isn't on file, I say so and pass your question to the team.",
+  },
 ];
 
 export function smallTalk(text: string): string | null {
