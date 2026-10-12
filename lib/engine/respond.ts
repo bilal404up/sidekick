@@ -18,8 +18,8 @@ export interface Reply {
   coverage?: "full" | "partial";
   /** Partial answers only. Says which words of the question the entry does not mention. */
   note?: string;
-  /** Answers only. What the match rests on, so a customer can check it: matched word stems, strength and the cutoff. */
-  match?: { stems: string[]; strength: number; threshold: number };
+  /** Answers only. What the match rests on: matched word stems, strength, the cutoff, and any words matched only through the entry's hidden keywords. */
+  match?: { stems: string[]; strength: number; threshold: number; keywordsOnly?: string[] };
   /** AI mode only. The matched entry word for word, so the reworded answer can be checked against it. */
   card?: { question: string; answer: string; category?: string };
 }
@@ -136,6 +136,9 @@ function framing(found: Found, original: string, mode: Mode): Pick<Reply, "headl
   const faq = top.faq;
   const onEntry = new Set(tokens(`${faq.question} ${faq.keywords ?? ""} ${faq.answer}`));
   const stems = Array.from(new Set([...tokens(query), ...tokens(original)])).filter((t) => onEntry.has(t));
+  const visible = new Set(tokens(`${faq.question} ${faq.answer}`));
+  const hidden = new Set(stems.filter((t) => !visible.has(t)));
+  const keywordsOnly = Array.from(new Set((original.match(/[A-Za-z0-9']+/g) ?? []).filter((w) => hidden.has(tokens(w)[0] ?? ""))));
 
   const missing: string[] = [];
   const checkMissing = route ? Boolean(route.flagTrigger) : top.coverage < FULL_COVERAGE;
@@ -160,7 +163,7 @@ function framing(found: Found, original: string, mode: Mode): Pick<Reply, "headl
     coverage: partial ? "partial" : "full",
     ...(partial ? { note: `The FAQ entry doesn't mention ${quoteList(missing)}, so I can't answer that part. You can ask the team at ${SUPPORT_EMAIL}.` } : {}),
     ...(related.length > 0 ? { related } : {}),
-    match: { stems, strength: Math.round(top.coverage * 100) / 100, threshold: MIN_COVERAGE },
+    match: { stems, strength: Math.round(top.coverage * 100) / 100, threshold: MIN_COVERAGE, ...(keywordsOnly.length ? { keywordsOnly } : {}) },
   };
 }
 

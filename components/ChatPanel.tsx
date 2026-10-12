@@ -27,6 +27,7 @@ interface Msg {
   stems?: string[];
   strength?: number;
   threshold?: number;
+  keywordsOnly?: string[];
 }
 
 const CHIPS: Array<{ label: string; note?: string }> = [
@@ -63,6 +64,7 @@ function toMsg(r: Partial<Reply>, id: number, example: boolean): Msg {
     stems: r.match?.stems,
     strength: r.match?.strength,
     threshold: r.match?.threshold,
+    keywordsOnly: r.match?.keywordsOnly,
   };
 }
 
@@ -309,6 +311,11 @@ function Answer({ m, onAsk, disabled }: { m: Msg; onAsk: (q: string) => void; di
                       <span className="absolute -top-1 h-3.5 w-0.5 bg-ink" style={{ left: `${threshold}%` }} />
                     </div>
                   </div>
+                )}
+                {m.keywordsOnly && m.keywordsOnly.length > 0 && (
+                  <p className="mt-3 text-[12px] leading-4 text-ink-muted">
+                    This entry is tagged with {m.keywordsOnly.map((w) => `“${w}”`).join(", ")}, so it matched even though its text doesn&apos;t use that word.
+                  </p>
                 )}
                 <p className="mt-3 text-[12px] leading-4 text-ink-muted">
                   {MODE_NOTE[m.mode ?? "faq"] ?? MODE_NOTE.faq}
