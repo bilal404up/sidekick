@@ -5,6 +5,7 @@ import { Wordmark } from "@/components/Wordmark";
 import { llmConfigFromEnv } from "@/lib/llm";
 import { isDemoMode } from "@/lib/admin-auth";
 import { listFaqs } from "@/lib/store";
+import { aliasMap } from "@/lib/faqGroups";
 import { respond } from "@/lib/engine/respond";
 import { MIN_COVERAGE, type Faq } from "@/lib/engine/retrieve";
 
@@ -16,7 +17,8 @@ const EXAMPLES = ["How much is shipping?", "Can you recommend a laptop?"];
 async function loadDemo(): Promise<{ faqs: FaqLite[]; script?: ScriptStep[] }> {
   try {
     const all = (await listFaqs()) as Faq[];
-    const faqs = all.map((f) => ({ id: f.id, category: f.category ?? "General", question: f.question }));
+    const aliases = aliasMap(all);
+    const faqs = all.map((f) => ({ id: f.id, category: f.category ?? "General", question: f.question, aliasOf: aliases.get(f.id) }));
     if (all.length === 0) return { faqs };
     const script = await Promise.all(EXAMPLES.map(async (question) => ({ question, reply: await respond(question, all) })));
     return { faqs, script };

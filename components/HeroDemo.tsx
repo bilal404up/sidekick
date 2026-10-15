@@ -8,6 +8,7 @@ export interface FaqLite {
   id: string;
   category: string;
   question: string;
+  aliasOf?: string;
 }
 interface Line {
   key: number;
@@ -27,6 +28,8 @@ export function HeroDemo({ llmOn, demo, faqs, script }: { llmOn: boolean; demo: 
   const listRef = useRef<HTMLUListElement>(null);
   const linkRef = useRef<{ msgId: number; sourceId: string; drawn: boolean } | null>(null);
   const keyRef = useRef(0);
+  const aliasRef = useRef(new Map<string, string>());
+  aliasRef.current = new Map(faqs.filter((f) => f.aliasOf).map((f) => [f.id, f.aliasOf as string]));
   const [active, setActive] = useState<string | null>(null);
   const [version, setVersion] = useState(0);
   const [line, setLine] = useState<Line | null>(null);
@@ -34,7 +37,7 @@ export function HeroDemo({ llmOn, demo, faqs, script }: { llmOn: boolean; demo: 
 
   const groups = useMemo(() => {
     const map = new Map<string, FaqLite[]>();
-    for (const f of faqs) map.set(f.category || "General", [...(map.get(f.category || "General") ?? []), f]);
+    for (const f of faqs.filter((x) => !x.aliasOf)) map.set(f.category || "General", [...(map.get(f.category || "General") ?? []), f]);
     return Array.from(map.entries());
   }, [faqs]);
 
@@ -79,8 +82,9 @@ export function HeroDemo({ llmOn, demo, faqs, script }: { llmOn: boolean; demo: 
 
   const onEvent = useCallback((e: ChatEvent) => {
     if (e.type === "answer") {
-      linkRef.current = { msgId: e.msgId, sourceId: e.sourceId, drawn: false };
-      setActive(e.sourceId);
+      const target = aliasRef.current.get(e.sourceId) ?? e.sourceId;
+      linkRef.current = { msgId: e.msgId, sourceId: target, drawn: false };
+      setActive(target);
       setVersion((v) => v + 1);
     } else {
       setWaiting((w) => [{ key: `${Date.now()}-${w.length}`, question: e.question, example: e.example }, ...w].slice(0, 6));
@@ -130,7 +134,7 @@ export function HeroDemo({ llmOn, demo, faqs, script }: { llmOn: boolean; demo: 
       <section aria-label="The shop's FAQ" className="panel hidden min-h-0 flex-col overflow-hidden lg:flex">
         <header className="flex items-baseline justify-between gap-3 border-b border-rule px-4 py-3">
           <h3 className="text-[15px] leading-5 tracking-normal">The FAQ it answers from</h3>
-          <span className="text-[12px] leading-4 text-ink-muted">{faqs.length} entries</span>
+          <span className="text-[12px] leading-4 text-ink-muted">{faqs.filter((f) => !f.aliasOf).length} entries</span>
         </header>
         {faqs.length === 0 ? (
           <p className="p-4 text-[14px] leading-5 text-ink-muted">The FAQ couldn&apos;t be loaded right now.</p>
