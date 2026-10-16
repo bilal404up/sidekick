@@ -10,6 +10,8 @@ import { respond } from "@/lib/engine/respond";
 import { MIN_COVERAGE, type Faq } from "@/lib/engine/retrieve";
 
 export const dynamic = "force-dynamic";
+// The FAQ list must come from the database on every visit, not from Vercel's shared data cache.
+export const fetchCache = "force-no-store";
 
 const EXAMPLES = ["How much is shipping?", "Can you recommend a laptop?"];
 
