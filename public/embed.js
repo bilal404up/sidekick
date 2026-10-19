@@ -11,14 +11,14 @@
 
   var css = [
     ":host{all:initial}",
-    ".sk-btn{position:fixed;right:20px;bottom:20px;z-index:2147483000;display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 20px 0 18px;border:0;border-radius:999px;background:#15181B;color:#FFFFFF;font:" +
+    ".sk-btn{position:fixed;right:20px;bottom:20px;z-index:2147483000;display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 20px 0 18px;border:0;border-radius:999px;background:#16181B;color:#F5F3EC;font:" +
       font +
-      ";cursor:pointer;outline:2px solid transparent;box-shadow:0 1px 2px rgba(21,24,27,.2),0 10px 28px rgba(21,24,27,.24)}",
-    ".sk-btn:hover{background:#2A2F34}",
+      ";cursor:pointer;outline:2px solid transparent;box-shadow:0 1px 2px rgba(22,24,27,.2),0 10px 28px rgba(22,24,27,.24)}",
+    ".sk-btn:hover{background:#2A2E33}",
     /* Two-tone ring: white next to the dark button, dark outside it, visible on light and dark host pages. */
-    ".sk-btn:focus-visible{box-shadow:0 0 0 2px #FFFFFF,0 0 0 5px #15181B,0 10px 28px rgba(21,24,27,.24)}",
-    ".sk-dot{width:8px;height:8px;border-radius:50%;background:#3FB27F}",
-    ".sk-frame{position:fixed;right:20px;bottom:84px;z-index:2147483000;width:380px;max-width:calc(100vw - 24px);height:560px;max-height:calc(100vh - 104px);border:1px solid #E4E4DF;border-radius:16px;background:#FFFFFF;box-shadow:0 1px 2px rgba(21,24,27,.06),0 24px 48px -16px rgba(21,24,27,.28);display:none;opacity:0;transform:translateY(12px) scale(.98);transform-origin:bottom right}",
+    ".sk-btn:focus-visible{box-shadow:0 0 0 2px #FFFFFF,0 0 0 5px #16181B,0 10px 28px rgba(22,24,27,.24)}",
+    ".sk-dot{width:8px;height:8px;border-radius:50%;background:#7FBF95;box-shadow:0 0 0 3px rgba(127,191,149,.22)}",
+    ".sk-frame{position:fixed;right:20px;bottom:84px;z-index:2147483000;width:380px;max-width:calc(100vw - 24px);height:560px;max-height:calc(100vh - 104px);border:1px solid #DCD8CC;border-radius:8px;background:#FFFFFF;box-shadow:0 1px 2px rgba(22,24,27,.06),0 24px 48px -16px rgba(22,24,27,.28);display:none;opacity:0;transform:translateY(12px) scale(.98);transform-origin:bottom right}",
     ".sk-frame.is-open{opacity:1;transform:none}",
     "@media (prefers-reduced-motion:no-preference){.sk-frame{transition:opacity 180ms ease-out,transform 220ms cubic-bezier(.2,.8,.2,1)}.sk-btn{transition:background-color 150ms}}",
     "@media (max-width:420px){.sk-btn{right:12px;bottom:12px}.sk-frame{right:12px;bottom:76px;max-height:calc(100vh - 92px)}}",

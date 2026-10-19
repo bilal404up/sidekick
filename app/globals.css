@@ -4,80 +4,165 @@
 
 :root {
   color-scheme: light;
-  /* One family for everything. Headings use the same face at a heavier weight. */
-  --font-display: var(--font-body);
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
 }
 
 html,
 body {
-  background: #fafaf7;
-  color: #15181b;
+  background: #f5f3ec;
+  color: #16181b;
   font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1,
 h2,
 h3 {
-  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
   font-weight: 600;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.005em;
   text-wrap: balance;
 }
 
 *:focus-visible {
-  outline: 2px solid #15181b;
+  outline: 2px solid #16181b;
   outline-offset: 2px;
+}
+.on-night *:focus-visible {
+  outline-color: #e9e6dc;
 }
 
 ::selection {
-  background: #cde9d8;
-  color: #15181b;
+  background: #d6efb4;
+  color: #16181b;
 }
 
 @layer components {
+  /* Statements: the serif. Interface: Plex Sans. Citations and counts: Plex Mono. */
+  .display {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    font-optical-sizing: auto;
+  }
+  .display em {
+    font-style: italic;
+    font-weight: 400;
+  }
+  .label {
+    @apply font-mono text-[12px] font-medium uppercase leading-4 tracking-[0.06em];
+  }
+  .cite {
+    @apply font-mono font-medium tabular-nums tracking-[0.02em];
+  }
+
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-4 text-[15px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-4 text-[15px] font-medium leading-5 transition-colors duration-150 ease-out;
   }
   .btn-primary {
-    @apply btn bg-ink text-white hover:bg-[#2a2f34];
+    @apply btn bg-ink text-paper hover:bg-[#2A2E33];
   }
   .btn-secondary {
-    @apply btn border border-rule-strong bg-surface text-ink hover:border-ink;
+    @apply btn border border-rule-strong bg-sheet text-ink hover:border-ink;
   }
-  .btn-found {
-    @apply btn bg-found text-white hover:bg-found-dark;
+  .btn-moss {
+    @apply btn bg-moss text-white hover:bg-moss-dark;
+  }
+  /* Disabled is flat and legible, never a faded version of the live colour. */
+  .btn:disabled,
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-moss:disabled {
+    @apply cursor-not-allowed border-transparent bg-[#E6E2D7] text-ink-2 shadow-none;
   }
   .btn-quiet {
-    @apply inline-flex min-h-11 items-center rounded-md px-2 text-[14px] font-semibold text-ink-muted transition-colors hover:text-ink disabled:opacity-50;
+    @apply inline-flex min-h-11 items-center rounded-sm px-2 text-[14px] font-medium text-ink-2 underline-offset-4 transition-colors duration-150 hover:text-ink hover:underline disabled:cursor-not-allowed disabled:text-ink-3 disabled:no-underline;
   }
   .field {
-    @apply w-full rounded-md border border-rule-strong bg-surface px-3 text-[16px] text-ink placeholder:text-ink-subtle hover:border-ink-muted;
+    @apply w-full rounded-sm border border-rule-strong bg-sheet px-3 text-[16px] text-ink transition-colors duration-150 placeholder:text-ink-3 hover:border-ink-3 focus:border-ink disabled:bg-paper disabled:text-ink-2;
   }
   .chip {
-    @apply inline-flex min-h-11 items-center rounded-full border border-rule-strong bg-surface px-4 text-left text-[14px] leading-5 text-ink hover:border-ink disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex min-h-11 shrink-0 items-center gap-2 whitespace-nowrap rounded-sm border border-rule bg-paper px-3.5 text-left text-[14px] leading-5 text-ink transition-colors duration-150 hover:border-ink disabled:cursor-not-allowed disabled:text-ink-2 disabled:hover:border-rule;
   }
-  .panel {
-    @apply rounded-xl border border-rule bg-surface shadow-panel;
+  .sheet {
+    @apply rounded-lg border border-rule bg-sheet shadow-sheet;
+  }
+  .card {
+    @apply rounded-lg border border-rule bg-sheet;
   }
   .dot {
     @apply inline-block h-2 w-2 shrink-0 rounded-full;
   }
-  .mark {
-    @apply rounded-[3px] bg-found-mark px-[2px] text-ink;
+  .count {
+    @apply inline-flex min-w-[22px] items-center justify-center rounded-full px-1.5 font-mono text-[12px] font-medium leading-5 tabular-nums;
   }
+
+  /* Matched words: a highlighter pen, swept left to right. Resting style is the full highlight. */
+  .mark {
+    background-color: transparent;
+    background-image: linear-gradient(#d6efb4, #d6efb4);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border-radius: 2px;
+    padding: 0 2px;
+    margin: 0 -1px;
+    color: inherit;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
   .typing-dot {
-    @apply inline-block h-1.5 w-1.5 rounded-full bg-ink-subtle;
+    @apply inline-block h-1.5 w-1.5 rounded-full bg-ink-3;
+  }
+
+  /* The FAQ index: a printed index with citation numbers in the margin. */
+  .entry .num {
+    color: #676c72;
   }
   .entry[data-active="true"] {
-    background: #e7f3ec;
-    box-shadow: inset 3px 0 0 #117a4a;
-    color: #0c5c37;
-    font-weight: 600;
+    background: #e2ece4;
+    box-shadow: inset 2px 0 0 #1d5a3c;
+  }
+  .entry[data-active="true"] .num,
+  .entry[data-active="true"] .q {
+    color: #1d5a3c;
+  }
+  .entry[data-active="true"] .q {
+    font-weight: 500;
   }
   .is-new {
-    background: rgba(231, 243, 236, 0.6);
-    box-shadow: inset 3px 0 0 #117a4a;
+    background: #e2ece4;
+    box-shadow: inset 2px 0 0 #1d5a3c;
+  }
+
+  .skeleton {
+    @apply rounded-sm bg-[#E9E5DA];
+  }
+
+  /* Bottom sheet for the cited entry on small screens. */
+  dialog.sheet-dialog {
+    margin: auto auto 0;
+    width: 100%;
+    max-width: 560px;
+    max-height: 85vh;
+    padding: 0;
+    border: 0;
+    border-radius: 8px 8px 0 0;
+    background: #ffffff;
+    color: #16181b;
+    box-shadow: 0 -20px 50px -20px rgba(22, 24, 27, 0.35);
+  }
+  dialog.sheet-dialog::backdrop {
+    background: rgba(17, 21, 19, 0.45);
+  }
+
+  .scroll-row {
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
+  }
+  .scroll-row::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -99,6 +184,23 @@ h3 {
     stroke-dashoffset: 1;
   }
 }
+@keyframes sweep {
+  from {
+    background-size: 0% 100%;
+  }
+}
+@keyframes pin {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+@keyframes tick {
+  0% {
+    opacity: 0.2;
+    transform: translateY(-4px);
+  }
+}
 @keyframes pop {
   0% {
     opacity: 0;
@@ -111,13 +213,25 @@ h3 {
 }
 @keyframes bump {
   40% {
-    transform: scale(1.25);
+    transform: scale(1.2);
+  }
+}
+@keyframes ticket {
+  from {
+    opacity: 0;
+    transform: translateX(-20px) rotate(-1.5deg);
   }
 }
 @keyframes slide-out {
   to {
     opacity: 0;
     transform: translateX(24px);
+  }
+}
+@keyframes sheet-up {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
   }
 }
 @keyframes pulse-dot {
@@ -136,28 +250,60 @@ h3 {
     transform: translateY(14px);
   }
 }
+@keyframes shimmer {
+  50% {
+    opacity: 0.55;
+  }
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .anim-rise {
-    animation: rise 240ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation: rise 240ms var(--ease) backwards;
   }
   .anim-fade {
-    animation: fade 200ms ease-out backwards;
+    animation: fade 240ms var(--ease) backwards;
   }
   .anim-draw {
-    animation: draw 480ms cubic-bezier(0.4, 0, 0.2, 1) backwards;
+    animation: draw 600ms var(--ease) 120ms backwards;
+  }
+  .anim-pin {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pin 240ms var(--ease) backwards;
+  }
+  .anim-pin-late {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pin 240ms var(--ease) 660ms backwards;
+  }
+  .sweep .mark {
+    animation: sweep 360ms var(--ease) backwards;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+  .entry[data-active="true"] .num {
+    animation: tick 300ms var(--ease) 700ms backwards;
+    display: inline-block;
   }
   .anim-pop {
     animation: pop 260ms cubic-bezier(0.3, 1.4, 0.5, 1) backwards;
   }
   .anim-bump {
-    animation: bump 260ms ease-out;
+    animation: bump 260ms var(--ease);
+  }
+  .anim-ticket {
+    animation: ticket 420ms var(--ease) backwards;
   }
   .anim-slide-out {
     animation: slide-out 220ms ease-in forwards;
   }
+  dialog.sheet-dialog[open] {
+    animation: sheet-up 240ms var(--ease);
+  }
+  dialog.sheet-dialog[open]::backdrop {
+    animation: fade 240ms var(--ease);
+  }
   .anim-hero > * {
-    animation: hero-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+    animation: hero-in 420ms var(--ease) backwards;
     animation-delay: calc(var(--i, 0) * 90ms);
   }
   .typing .typing-dot {
@@ -169,14 +315,11 @@ h3 {
   .typing .typing-dot:nth-child(3) {
     animation-delay: 0.3s;
   }
-  .chip {
-    transition: transform 150ms ease-out, border-color 150ms;
-  }
-  .chip:hover:not(:disabled) {
-    transform: translateY(-1px);
+  .skeleton {
+    animation: shimmer 1.4s ease-in-out infinite;
   }
   .entry {
-    transition: background-color 200ms, box-shadow 200ms, color 200ms;
+    transition: background-color 240ms var(--ease), box-shadow 240ms var(--ease), color 240ms var(--ease);
   }
 }
 

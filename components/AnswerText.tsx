@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 import { tokens } from "@/lib/engine/text";
 
 type Block = { type: "p"; text: string } | { type: "ol"; start: number; items: string[] } | { type: "ul"; items: string[] };
@@ -27,12 +27,13 @@ function toBlocks(text: string): Block[] {
   return blocks;
 }
 
-function marked(text: string, stems?: Set<string>): ReactNode {
+function marked(text: string, stems?: Set<string>, seq?: { n: number }): ReactNode {
   if (!stems || stems.size === 0) return text;
   return text.split(/(\s+)/).map((part, i) => {
     const t = part.trim() ? tokens(part)[0] : undefined;
     return t && stems.has(t) ? (
-      <mark key={i} className="mark">
+      // --i staggers the highlighter sweep, 40ms per matched word.
+      <mark key={i} className="mark" style={{ "--i": seq ? seq.n++ : 0 } as CSSProperties}>
         {part}
       </mark>
     ) : (
@@ -43,21 +44,22 @@ function marked(text: string, stems?: Set<string>): ReactNode {
 
 /** FAQ text laid out as paragraphs and lists. The words are never changed; matched words can be highlighted. */
 export function AnswerText({ text, stems, className = "" }: { text: string; stems?: Set<string>; className?: string }) {
+  const seq = { n: 0 };
   return (
     <div className={`space-y-2 ${className}`}>
       {toBlocks(text).map((b, i) =>
         b.type === "p" ? (
-          <p key={i}>{marked(b.text, stems)}</p>
+          <p key={i}>{marked(b.text, stems, seq)}</p>
         ) : b.type === "ol" ? (
           <ol key={i} start={b.start} className="list-decimal space-y-1 pl-5">
             {b.items.map((it, j) => (
-              <li key={j}>{marked(it, stems)}</li>
+              <li key={j}>{marked(it, stems, seq)}</li>
             ))}
           </ol>
         ) : (
           <ul key={i} className="list-disc space-y-1 pl-5">
             {b.items.map((it, j) => (
-              <li key={j}>{marked(it, stems)}</li>
+              <li key={j}>{marked(it, stems, seq)}</li>
             ))}
           </ul>
         )

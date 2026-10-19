@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
-import { Schibsted_Grotesk } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
 
-const sans = Schibsted_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-body", display: "swap" });
+// Newsreader is a variable font; leaving weight unset keeps the optical-size axis.
+const display = Newsreader({ subsets: ["latin"], style: ["normal", "italic"], axes: ["opsz"], variable: "--font-display", display: "swap" });
+const sans = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body", display: "swap" });
+const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Sidekick: a support chatbot that only answers from your FAQ",
+  title: "Sidekick: a support assistant that cites your FAQ",
   description:
-    "A demo support assistant for a fictional shop. Every answer links to the FAQ entry it came from, and questions the FAQ does not cover go to the owner instead of being made up. Sample data.",
+    "A demo support assistant for a made-up shop. Every answer quotes the FAQ entry it came from and shows which one. Questions the FAQ does not cover go to the owner. Sample data.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={sans.variable}>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   );
