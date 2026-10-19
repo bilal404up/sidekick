@@ -70,10 +70,19 @@ h3 {
   }
   /* Disabled is flat and legible, never a faded version of the live colour. */
   .btn:disabled,
-  .btn-primary:disabled,
-  .btn-secondary:disabled,
-  .btn-moss:disabled {
+  .btn-secondary:disabled {
     @apply cursor-not-allowed border-transparent bg-[#E6E2D7] text-ink-2 shadow-none;
+  }
+  /* Primary and moss keep their hue at 38%, so a dimmed Send still reads as the same button. */
+  .btn-primary:disabled {
+    @apply cursor-not-allowed border-transparent shadow-none;
+    background-color: rgba(22, 24, 27, 0.38);
+    color: #f5f3ec;
+  }
+  .btn-moss:disabled {
+    @apply cursor-not-allowed border-transparent shadow-none;
+    background-color: rgba(29, 90, 60, 0.38);
+    color: #ffffff;
   }
   .btn-quiet {
     @apply inline-flex min-h-11 items-center rounded-sm px-2 text-[14px] font-medium text-ink-2 underline-offset-4 transition-colors duration-150 hover:text-ink hover:underline disabled:cursor-not-allowed disabled:text-ink-3 disabled:no-underline;
@@ -158,8 +167,6 @@ h3 {
 
   .scroll-row {
     scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
-    mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
   }
   .scroll-row::-webkit-scrollbar {
     display: none;
@@ -384,3 +391,47 @@ html.js .draw-line--y:not([data-in]) { transform: scaleY(0); }
   }
 }
 /* ===== End motion kit ===== */
+
+/* ===== Sidekick polish: chips, buttons, hero, match bar ===== */
+/* Phones: the chip row scrolls sideways with a right fade and snaps chip to chip. */
+@media (max-width: 639.98px) {
+  .scroll-row {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+    scroll-snap-type: x proximity;
+  }
+  .scroll-row .chip {
+    scroll-snap-align: start;
+  }
+}
+
+/* Pressed state for the buttons and chips (a state, not a loop, so it stays under reduced motion). */
+.btn-primary:active:not(:disabled),
+.btn-secondary:active:not(:disabled),
+.btn-moss:active:not(:disabled),
+.chip:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-em {
+    display: inline-block;
+    animation: em-focus 700ms var(--ease) 420ms backwards;
+  }
+  .match-fill {
+    animation: match-grow 700ms var(--ease) 300ms backwards;
+  }
+}
+@keyframes em-focus {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(6px);
+  }
+}
+@keyframes match-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+/* ===== End Sidekick polish ===== */

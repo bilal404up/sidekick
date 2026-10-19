@@ -160,7 +160,7 @@ export function HeroDemo({ llmOn, demo, faqs, script }: { llmOn: boolean; demo: 
           {faqs.length === 0 ? (
             <p className="py-4 text-[14px] leading-5 text-ink-2">The FAQ couldn&apos;t be loaded right now.</p>
           ) : (
-            <ul ref={listRef} className="relative min-h-0 flex-1 overflow-y-auto pb-4">
+            <ul ref={listRef} style={{ scrollPaddingTop: 8 }} className="relative min-h-0 flex-1 overflow-y-auto pb-4 pt-2">
               {groups.map(([cat, items]) => (
                 <li key={cat}>
                   <p className="label sticky top-0 z-[1] border-b border-rule bg-paper/95 pb-1.5 pt-4 text-ink-2 backdrop-blur-sm">{cat}</p>
@@ -178,7 +178,7 @@ export function HeroDemo({ llmOn, demo, faqs, script }: { llmOn: boolean; demo: 
           )}
         </section>
 
-        <section aria-label="Owner's inbox" className="hidden min-h-0 flex-col xl:flex">
+        <section aria-label="Owner's inbox" className="hidden h-full min-h-0 flex-col xl:flex">
           <header className="flex items-center justify-between gap-3 border-b border-ink pb-2 pt-0.5">
             <h3 className="label text-ink">Owner&apos;s inbox</h3>
             <span key={waiting.length} className={`count ${waiting.length ? "anim-bump bg-ember text-white" : "bg-[#E6E2D7] text-ink-2"}`}>
@@ -199,6 +199,7 @@ export function HeroDemo({ llmOn, demo, faqs, script }: { llmOn: boolean; demo: 
                 ))}
               </ul>
             )}
+            {waiting.length > 0 && <p className="mt-4 text-[13px] leading-[19px] text-ink-2">More questions wait here in the owner view.</p>}
           </div>
           <div className="border-t border-rule pt-4">
             <p className="mb-3 text-[13px] leading-[19px] text-ink-2">The owner answers once. Every customer gets that answer after.</p>

@@ -102,7 +102,7 @@ export default async function Home() {
               className="display mt-5 text-[48px] leading-[50px] sm:text-[64px] sm:leading-[64px] lg:text-[80px] lg:leading-[80px] xl:text-[88px] xl:leading-[84px]"
             >
               Every answer cites your FAQ. <br className="hidden lg:block" />
-              <em className="text-moss">Everything else</em> comes to you.
+              <em className="hero-em text-moss">Everything else</em> comes to you.
             </h1>
             <div style={{ "--i": 2 } as React.CSSProperties} className="mt-7 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <p className="max-w-[54ch] text-[17px] leading-[28px] text-ink-2">

@@ -100,14 +100,25 @@ export function ChatPanel({
   const inputRef = useRef<HTMLInputElement>(null);
   const compact = variant === "widget";
 
-  // Keep the newest message's top in view. A long answer is never scrolled past its first line.
+  // Anchor on a whole item, never a cut-off bubble. The latest question sits 12px below the top.
+  // If an assistant reply has arrived and the question plus reply fit, the question stays on top;
+  // otherwise the reply's own first line does.
   useLayoutEffect(() => {
     const el = logRef.current;
     if (!el) return;
     const bottom = el.scrollHeight - el.clientHeight;
     const items = Array.from(el.querySelectorAll<HTMLElement>("[data-item]:not([data-note])"));
-    const last = items[items.length - 1];
-    el.scrollTop = last ? Math.min(bottom, Math.max(0, last.offsetTop - 16)) : bottom;
+    const lastIndex = items.length - 1;
+    let anchor: HTMLElement | undefined = items[lastIndex];
+    if (lastIndex > 0 && items[lastIndex].dataset.role !== "user") {
+      let q = lastIndex - 1;
+      while (q >= 0 && items[q].dataset.role !== "user") q--;
+      if (q >= 0) {
+        const pair = items[lastIndex].offsetTop + items[lastIndex].offsetHeight - items[q].offsetTop;
+        if (pair <= el.clientHeight - 24) anchor = items[q];
+      }
+    }
+    el.scrollTop = anchor ? Math.min(bottom, Math.max(0, anchor.offsetTop - 12)) : bottom;
   }, [messages, busy, typing]);
 
   function emit(m: Msg, question: string) {
@@ -229,7 +240,7 @@ export function ChatPanel({
           <span aria-hidden="true" className="label hidden shrink-0 text-ink-2 sm:block">
             Try
           </span>
-          <div className="scroll-row flex min-w-0 flex-1 gap-2 overflow-x-auto pr-8">
+          <div className="scroll-row flex min-w-0 flex-1 gap-2 overflow-x-auto pr-8 sm:flex-wrap sm:overflow-visible sm:pr-5">
             {CHIPS.map((c) => (
               <button key={c.label} type="button" onClick={() => send(c.label)} disabled={busy} className="chip">
                 {c.label}
@@ -292,7 +303,7 @@ function Entry({ m, cite, compact, onAsk, disabled }: { m: Msg; cite?: Cite; com
   }
   if (m.role === "user") {
     return (
-      <div data-item className="anim-rise flex justify-end">
+      <div data-item data-role="user" className="anim-rise flex justify-end">
         <p className="max-w-[85%] rounded-lg rounded-br-xs bg-ink px-4 py-2.5 text-[15px] leading-[22px] text-paper">{m.text}</p>
       </div>
     );
@@ -441,7 +452,7 @@ export function MatchScale({ strength, threshold }: { strength: number; threshol
         {Array.from({ length: 11 }, (_, i) => (
           <span key={i} className="absolute top-[10px] h-[7px] w-px bg-rule-strong" style={{ left: `${i * 10}%` }} />
         ))}
-        <span className="absolute left-0 top-[11px] h-[5px] rounded-xs bg-moss" style={{ width: `${s}%` }} />
+        <span className="match-fill absolute left-0 top-[11px] h-[5px] w-full origin-left rounded-xs bg-moss" style={{ transform: `scaleX(${s / 100})` }} />
         <span className="absolute top-[4px] h-[18px] w-[2px] -translate-x-1/2 bg-ink" style={{ left: `${threshold}%` }} />
         <span
           className="absolute -top-3 -translate-x-1/2 whitespace-nowrap font-mono text-[11px] uppercase leading-3 tracking-[0.06em] text-ink-2"
