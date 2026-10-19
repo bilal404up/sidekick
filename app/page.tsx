@@ -2,6 +2,10 @@ import { HeroDemo, type FaqLite } from "@/components/HeroDemo";
 import { MatchScale, type ScriptStep } from "@/components/ChatPanel";
 import { AdminEntry } from "@/components/AdminEntry";
 import { Wordmark } from "@/components/Wordmark";
+import { Reveal } from "@/components/motion/Reveal";
+import { DrawLine } from "@/components/motion/DrawLine";
+import { OwnerStep } from "@/components/OwnerStory";
+import { CopyScript } from "@/components/CopyScript";
 import { llmConfigFromEnv } from "@/lib/llm";
 import { isDemoMode } from "@/lib/admin-auth";
 import { listFaqs } from "@/lib/store";
@@ -34,6 +38,8 @@ async function loadDemo(): Promise<{ faqs: FaqLite[]; script?: ScriptStep[] }> {
 }
 
 const h2 = "display text-[40px] leading-[44px] sm:text-[56px] sm:leading-[58px]";
+const EMBED_SNIPPET = '<script src="https://YOUR-DOMAIN/embed.js" async></script>';
+const DOES_IT = "A widget that installs with one line and answers only from the FAQ. Emails and phone numbers are removed before a chat is stored, and automated tests cover matching and refusals.";
 
 export default async function Home() {
   const llmOn = llmConfigFromEnv() !== null;
@@ -125,10 +131,12 @@ export default async function Home() {
         <section id="how" className="scroll-mt-4 border-t border-rule">
           <div className="mx-auto max-w-page px-4 py-24 sm:px-6 lg:py-36">
             <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-              <h2 className={`${h2} lg:col-span-8`}>
-                A chatbot invented a refund policy. <em>The airline had to pay.</em>
-              </h2>
-              <div className="lg:col-span-4 lg:pt-4">
+              <Reveal variant="clip" className="lg:col-span-8">
+                <h2 className={h2}>
+                  A chatbot invented a refund policy. <em>The airline had to pay.</em>
+                </h2>
+              </Reveal>
+              <Reveal variant="rise" delay={150} className="lg:col-span-4 lg:pt-4">
                 <p className="text-[16px] leading-[26px] text-ink-2">
                   In 2024, Air Canada&apos;s website chatbot told a grieving customer he could claim a bereavement discount after booking. The real policy said no. A British Columbia tribunal ruled that
                   the airline is responsible for everything on its website, chatbot included, and ordered it to refund part of the fare.
@@ -137,20 +145,34 @@ export default async function Home() {
                   <span aria-hidden="true" className="text-moss">
                     &#167;
                   </span>
-                  Moffatt v. Air Canada, 2024 BCCRT 149
+                  <span className="type-in">Moffatt v. Air Canada, 2024 BCCRT 149</span>
                 </p>
-              </div>
+              </Reveal>
             </div>
 
             <div className="mt-24 lg:mt-32">
               <h3 className="display text-[32px] leading-[36px]">Three checks before it answers</h3>
               <ol className="relative mt-12 grid gap-12 lg:grid-cols-3 lg:gap-12">
-                <span aria-hidden="true" className="absolute bottom-6 left-[15px] top-4 w-px bg-moss lg:bottom-auto lg:left-4 lg:right-4 lg:top-[15px] lg:h-px lg:w-auto" />
+                <DrawLine direction="y" delay={300} className="absolute bottom-6 left-[15px] top-4 !h-auto w-px text-moss lg:!hidden" />
+                <DrawLine direction="x" delay={300} className="absolute left-4 right-4 top-[15px] !h-px !w-auto text-moss !hidden lg:!block" />
                 {steps.map((s, i) => (
-                  <li key={s.title} className="relative pl-14 lg:pl-0 lg:pt-16">
-                    <span aria-hidden="true" className="cite absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full bg-moss text-[12px] text-white ring-4 ring-paper">
-                      {String(i + 1).padStart(2, "0")}
+                  <Reveal as="li" key={s.title} delay={i * 110} className="relative pl-14 lg:pl-0 lg:pt-16">
+                    <span aria-hidden="true" className="cite absolute left-0 top-0 grid h-8 w-8 place-items-center rounded-full bg-moss text-white ring-4 ring-paper">
+                      <svg width="14" height="14" viewBox="0 0 14 14" focusable="false">
+                        <path
+                          d="M2.5 7.4 5.6 10.4 11.5 3.6"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          pathLength={20}
+                          strokeDasharray="20"
+                          className="tick-path"
+                        />
+                      </svg>
                     </span>
+                    <span className="sr-only">{String(i + 1).padStart(2, "0")}</span>
                     <p className="text-[20px] font-semibold leading-7">{s.title}</p>
                     <p className="mt-2 max-w-[44ch] text-[15px] leading-6 text-ink-2">{s.body}</p>
                     <div aria-hidden="true" className="mt-6 max-w-[380px]">
@@ -180,7 +202,7 @@ export default async function Home() {
                         </div>
                       )}
                     </div>
-                  </li>
+                  </Reveal>
                 ))}
               </ol>
             </div>
@@ -206,51 +228,16 @@ export default async function Home() {
 
             <ol className="mt-16 grid gap-10 lg:mt-20 lg:grid-cols-3 lg:gap-6">
               {frames.map((f, i) => (
-                <li key={f.title} className="flex flex-col">
+                <li key={f.title} className="relative flex flex-col">
                   <p className="flex items-baseline gap-3 border-t border-ink pt-3">
                     <span className="cite text-[13px] text-moss">{String(i + 1).padStart(2, "0")}</span>
                     <span className="text-[17px] font-semibold leading-6">{f.title}</span>
                   </p>
                   <p className="mb-5 mt-1.5 pl-8 text-[15px] leading-6 text-ink-2">{f.body}</p>
-                  <div aria-hidden="true" className="card mt-auto min-h-[236px] p-5">
-                    {i === 0 && (
-                      <div className="space-y-3">
-                        <p className="ml-auto w-fit max-w-[85%] rounded-lg rounded-br-xs bg-ink px-3.5 py-2 text-[14px] leading-5 text-paper">{NEW_QUESTION}</p>
-                        <p className="label flex items-center gap-2 text-ember-dark">
-                          <span className="h-px w-4 bg-ember" />
-                          Not in the FAQ
-                        </p>
-                        <p className="border-l-2 border-ember pl-3 text-[14px] leading-[21px]">{UNKNOWN_TEXT.split(". ")[0]}.</p>
-                        <p className="inline-flex rounded-sm border border-dashed border-ember/60 bg-ember-tint px-2.5 py-1 font-mono text-[12px] leading-4 text-ember-dark">Sent to the owner</p>
-                      </div>
-                    )}
-                    {i === 1 && (
-                      <div>
-                        <p className="label text-ember-dark">Open &middot; just now</p>
-                        <p className="display mt-1.5 text-[22px] leading-7">&ldquo;{NEW_QUESTION}&rdquo;</p>
-                        <div className="mt-3 rounded-sm border border-ink bg-sheet px-3 py-2 text-[14px] leading-[21px]">
-                          {NEW_ANSWER}
-                          <span className="ml-0.5 inline-block h-4 w-px translate-y-0.5 bg-ink" />
-                        </div>
-                        <div className="mt-3 flex items-center gap-3">
-                          <span className="inline-flex min-h-9 items-center rounded-sm bg-moss px-3 text-[14px] font-medium text-white">Add to FAQ</span>
-                          <span className="font-mono text-[12px] text-ink-2">Ctrl + Enter</span>
-                        </div>
-                      </div>
-                    )}
-                    {i === 2 && (
-                      <div className="space-y-3">
-                        <p className="ml-auto w-fit max-w-[85%] rounded-lg rounded-br-xs bg-ink px-3.5 py-2 text-[14px] leading-5 text-paper">{NEW_QUESTION}</p>
-                        <div className="rounded-lg rounded-bl-xs bg-paper px-3.5 pt-2.5 text-[14px] leading-[21px]">
-                          {NEW_ANSWER}
-                          <p className="mt-2.5 flex min-h-10 items-center gap-2 border-t border-rule text-[13px] text-ink-2">
-                            <span className="cite rounded-xs bg-moss px-1.5 py-0.5 text-[12px] leading-4 text-white">&#167; new</span>
-                            General &middot; your answer
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <OwnerStep step={i} question={NEW_QUESTION} answer={NEW_ANSWER} unknown={UNKNOWN_TEXT.split(". ")[0]} />
+                  {i < 2 && (
+                    <DrawLine direction="x" delay={i === 0 ? 1400 : 2800} className="!hidden absolute -right-6 top-[24px] !h-0 !w-6 !bg-none border-t border-dashed border-rule-strong lg:!block" />
+                  )}
                 </li>
               ))}
             </ol>
@@ -274,8 +261,9 @@ export default async function Home() {
                 </a>
               </div>
               <div className="min-w-0 self-center lg:col-span-7">
-                <pre className="whitespace-pre-wrap break-words rounded-lg border border-night-rule bg-black/25 p-6 font-mono text-[15px] leading-7 sm:p-8 sm:text-[19px] sm:leading-9">
-                  <code>
+                <Reveal variant="rise">
+                  <CopyScript snippet={EMBED_SNIPPET}>
+                  <code className="type-in">
                     <span className="text-night-2">&lt;</span>
                     <span className="text-marker">script</span> <span className="text-[#A9CDB6]">src</span>
                     <span className="text-night-2">=</span>
@@ -284,7 +272,22 @@ export default async function Home() {
                     <span className="text-marker">script</span>
                     <span className="text-night-2">&gt;</span>
                   </code>
-                </pre>
+                  </CopyScript>
+                  <ol className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-dashed border-night-rule pt-4 font-mono text-[12px] uppercase leading-4 tracking-[0.06em] text-night-2">
+                    <li className="flex items-center gap-2">
+                      <span className="text-marker">1</span>
+                      Paste
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-marker">2</span>
+                      Publish
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-marker">3</span>
+                      The chat button appears
+                    </li>
+                  </ol>
+                </Reveal>
               </div>
             </div>
 
@@ -292,27 +295,36 @@ export default async function Home() {
               <h2 id="build" className="display text-[32px] leading-[36px] sm:text-[40px] sm:leading-[44px] lg:col-span-4">
                 Build notes
               </h2>
-              <dl className="grid gap-10 md:grid-cols-3 lg:col-span-8">
-                <div>
+              <Reveal as="dl" stagger={80} className="grid gap-10 lg:col-span-8 lg:grid-cols-2 lg:gap-x-12">
+                <div className="lg:col-start-1 lg:row-start-1">
                   <dt className="label text-night-2">The problem</dt>
                   <dd className="mt-3 text-[15px] leading-6 text-night-ink">
                     Small shops want to answer customers around the clock, but a bot that invents a policy can cost them money and trust.
                   </dd>
                 </div>
-                <div>
+                <div className="lg:col-start-1 lg:row-start-2">
                   <dt className="label text-night-2">The approach</dt>
                   <dd className="mt-3 text-[15px] leading-6 text-night-ink">
                     Keyword retrieval with a {pct}% match bar, answers quoted straight from the FAQ, unanswered questions routed to the owner, and an optional language-model step that only ever sees one
                     entry.
                   </dd>
                 </div>
-                <div>
+                <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
                   <dt className="label text-night-2">What it does</dt>
-                  <dd className="mt-3 text-[15px] leading-6 text-night-ink">
-                    A widget that installs with one line and answers only from the FAQ. Emails and phone numbers are removed before a chat is stored, and automated tests cover matching and refusals.
+                  <dd className="mt-3">
+                    <ul className="space-y-3 text-[15px] leading-6 text-night-ink">
+                      {DOES_IT.split(/(?<=\.) /).map((sentence) => (
+                        <li key={sentence} className="flex gap-3">
+                          <span aria-hidden="true" className="cite pt-0.5 text-[12px] leading-6 text-night-2">
+                            &#167;
+                          </span>
+                          <span>{sentence}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </dd>
                 </div>
-              </dl>
+              </Reveal>
             </div>
           </div>
         </section>
@@ -321,7 +333,27 @@ export default async function Home() {
       <footer>
         <div className="mx-auto flex max-w-page flex-col gap-4 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <Wordmark />
-          <p className="text-[13px] leading-[18px] text-ink-2">Demo project. Sample shop and FAQ. Conversations come from visitors to this demo.</p>
+          <div className="flex flex-col gap-2 sm:items-end">
+            <p className="text-[13px] leading-[18px] text-ink-2">Demo project. Sample shop and FAQ. Conversations come from visitors to this demo.</p>
+            <div className="flex flex-wrap gap-x-5 text-[13px] text-ink-2">
+              <a
+                href="https://portfolio-v2-gilt-rho-53.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center underline-offset-4 hover:text-ink hover:underline"
+              >
+                Built by Bilal
+              </a>
+              <a
+                href="https://github.com/bilal404up/sidekick"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center underline-offset-4 hover:text-ink hover:underline"
+              >
+                Code on GitHub
+              </a>
+            </div>
+          </div>
         </div>
       </footer>
     </>

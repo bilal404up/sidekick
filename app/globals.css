@@ -434,4 +434,129 @@ html.js .draw-line--y:not([data-in]) { transform: scaleY(0); }
     transform: scaleX(0);
   }
 }
+/* Typed text: a left-to-right clip in steps, used for the owner scenes and the reveal blocks. */
+.os-type,
+.type-in {
+  display: inline-block;
+}
+.os-bar {
+  transform-origin: top;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Start states, only while the scene or reveal has not entered view. */
+  html.js [data-scene]:not([data-in]) .os-rise,
+  html.js [data-scene]:not([data-in]) .os-fade,
+  html.js [data-scene]:not([data-in]) .os-slide,
+  html.js [data-scene]:not([data-in]) .os-chip {
+    opacity: 0;
+  }
+  html.js [data-scene]:not([data-in]) .os-bar {
+    transform: scaleY(0);
+  }
+  html.js [data-scene]:not([data-in]) .os-type,
+  html.js [data-reveal]:not([data-in]) .type-in {
+    clip-path: inset(0 100% 0 0);
+  }
+  html.js [data-reveal]:not([data-in]) .copy-btn {
+    opacity: 0;
+  }
+  html.js [data-reveal]:not([data-in]) .tick-path {
+    stroke-dashoffset: 20;
+  }
+
+  [data-scene][data-in] .os-rise {
+    animation: os-rise 500ms var(--ease) var(--d, 0ms) backwards;
+  }
+  [data-scene][data-in] .os-fade {
+    animation: os-fade 400ms var(--ease) var(--d, 0ms) backwards;
+  }
+  [data-scene][data-in] .os-slide {
+    animation: os-slide 480ms var(--ease) var(--d, 0ms) backwards;
+  }
+  [data-scene][data-in] .os-chip {
+    animation: os-chip 320ms var(--ease) var(--d, 0ms) backwards;
+  }
+  [data-scene][data-in] .os-bar {
+    animation: os-bar 300ms var(--ease) var(--d, 0ms) backwards;
+  }
+  [data-scene][data-in] .os-press {
+    animation: os-press 600ms var(--ease) var(--d, 0ms) both;
+  }
+  [data-scene][data-in] .os-caret {
+    animation: os-blink 900ms steps(1, end) var(--d, 0ms) 3 backwards;
+  }
+  [data-scene][data-in] .os-type {
+    animation: type-in 900ms steps(var(--steps, 40), end) var(--d, 0ms) both;
+  }
+  [data-in] .type-in {
+    animation: type-in 900ms steps(40, end) var(--d, 300ms) both;
+  }
+  [data-in] .copy-btn {
+    animation: os-fade 400ms var(--ease) 1000ms backwards;
+  }
+  [data-in] .tick-path {
+    animation: tick-draw 420ms var(--ease) calc(var(--reveal-delay, 0ms) + 500ms) both;
+  }
+}
+@keyframes os-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes os-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes os-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+}
+@keyframes os-chip {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+@keyframes os-bar {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes os-press {
+  0% {
+    transform: scale(1);
+    background-color: #1d5a3c;
+  }
+  40% {
+    transform: scale(0.97);
+    background-color: #154630;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #154630;
+  }
+}
+@keyframes os-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes type-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes tick-draw {
+  from {
+    stroke-dashoffset: 20;
+  }
+}
 /* ===== End Sidekick polish ===== */
