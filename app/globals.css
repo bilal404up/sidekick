@@ -332,3 +332,55 @@ h3 {
     scroll-behavior: auto !important;
   }
 }
+
+/* ===== Motion kit (shared across the four demos) ===== */
+:root {
+  --kit-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --kit-dur: 700ms;
+}
+
+/* Start states: only when JS runs and before the element is in view. */
+html.js [data-reveal]:not([data-in]):not(:has(> [data-reveal-child])) { opacity: 0; }
+html.js [data-reveal="rise"]:not([data-in]):not(:has(> [data-reveal-child])) { transform: translateY(20px); }
+html.js [data-reveal="scale"]:not([data-in]):not(:has(> [data-reveal-child])) { transform: scale(0.96); }
+html.js [data-reveal="slide-left"]:not([data-in]):not(:has(> [data-reveal-child])) { transform: translateX(-24px); }
+html.js [data-reveal="slide-right"]:not([data-in]):not(:has(> [data-reveal-child])) { transform: translateX(24px); }
+html.js [data-reveal="clip"]:not([data-in]):not(:has(> [data-reveal-child])) { clip-path: inset(0 0 100% 0); opacity: 1; }
+
+[data-reveal] {
+  transition:
+    opacity var(--kit-dur) var(--kit-ease) var(--reveal-delay, 0ms),
+    transform var(--kit-dur) var(--kit-ease) var(--reveal-delay, 0ms),
+    clip-path var(--kit-dur) var(--kit-ease) var(--reveal-delay, 0ms);
+}
+
+/* Staggered children. */
+html.js [data-reveal]:not([data-in]) > [data-reveal-child] { opacity: 0; transform: translateY(16px); }
+html.js [data-reveal="fade"]:not([data-in]) > [data-reveal-child] { transform: none; }
+html.js [data-reveal="scale"]:not([data-in]) > [data-reveal-child] { transform: scale(0.96); }
+[data-reveal] > [data-reveal-child] {
+  transition:
+    opacity 600ms var(--kit-ease) calc(var(--reveal-delay, 0ms) + var(--i, 0) * var(--reveal-stagger, 60ms)),
+    transform 600ms var(--kit-ease) calc(var(--reveal-delay, 0ms) + var(--i, 0) * var(--reveal-stagger, 60ms));
+}
+
+/* Lines that draw. */
+.draw-line { display: block; background: currentColor; transition: transform var(--draw-ms, 900ms) var(--kit-ease) var(--draw-delay, 0ms); }
+.draw-line--x { height: 1px; width: 100%; transform-origin: left center; }
+.draw-line--y { width: 1px; height: 100%; transform-origin: center top; }
+html.js .draw-line--x:not([data-in]) { transform: scaleX(0); }
+html.js .draw-line--y:not([data-in]) { transform: scaleY(0); }
+
+/* Pressed state for buttons and links styled as buttons. */
+.press { transition: transform 120ms var(--kit-ease); }
+.press:active { transform: translateY(1px) scale(0.98); }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal], [data-reveal] > [data-reveal-child], .draw-line {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+}
+/* ===== End motion kit ===== */
