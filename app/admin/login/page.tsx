@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Wordmark } from "@/components/Wordmark";
+import { Mark } from "@/components/Wordmark";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -32,41 +32,41 @@ export default function AdminLogin() {
 
   return (
     <main className="grid min-h-screen place-items-center px-4 py-12">
-      <div className="w-full max-w-[400px]">
-        <a href="/" className="inline-flex min-h-11 items-center">
-          <Wordmark />
+      <div className="anim-rise w-full max-w-[420px]">
+        <a href="/" className="inline-flex min-h-11 items-center" aria-label="Sidekick home">
+          <Mark size={44} />
         </a>
-        <div className="panel anim-rise mt-6 p-6">
-          <h1 className="text-[24px] leading-[30px]">Owner login</h1>
-          <p className="mt-1.5 text-[15px] leading-[22px] text-ink-muted">Sign in to read conversations and add answers to the FAQ.</p>
-          <form onSubmit={submit} className="mt-6 space-y-4">
-            <div>
-              <label htmlFor="pw" className="mb-1.5 block text-[14px] font-semibold leading-5">
-                Password
-              </label>
-              <input
-                id="pw"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="field h-11"
-                aria-invalid={error ? true : undefined}
-                aria-describedby={error ? "pw-error" : undefined}
-              />
-              {error && (
-                <p id="pw-error" role="alert" className="mt-1.5 text-[13px] leading-[18px] text-error">
-                  {error}
-                </p>
-              )}
-            </div>
-            <button type="submit" disabled={busy || password.length === 0} className="btn-primary w-full">
-              {busy ? "Signing in" : "Sign in"}
-            </button>
-          </form>
-        </div>
-        <p className="mt-5 text-[14px] leading-5">
-          <a href="/" className="inline-flex min-h-11 items-center text-ink-muted underline underline-offset-4 hover:text-ink">
+        <p className="label mt-8 text-ink-2">Owner view</p>
+        <h1 className="display mt-3 text-[44px] leading-[46px]">Owner login</h1>
+        <p className="mt-3 text-[16px] leading-[26px] text-ink-2">Sign in to read conversations and add answers to the FAQ.</p>
+        <form onSubmit={submit} className="mt-8 space-y-4 border-t border-ink pt-6">
+          <div>
+            <label htmlFor="pw" className="mb-1.5 block text-[14px] font-medium leading-5">
+              Password
+            </label>
+            <input
+              id="pw"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="field h-12"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "pw-error" : undefined}
+            />
+            {error && (
+              <p id="pw-error" role="alert" className="mt-1.5 text-[13px] leading-[18px] text-error">
+                {error}
+              </p>
+            )}
+          </div>
+          <button type="submit" disabled={busy || password.length === 0} className="btn-primary h-12 w-full">
+            {busy ? "Signing in" : "Sign in"}
+          </button>
+        </form>
+        <p className="mt-6 text-[14px] leading-5">
+          <a href="/" className="inline-flex min-h-11 items-center gap-2 text-ink-2 underline underline-offset-4 hover:text-ink">
+            <span aria-hidden="true">&larr;</span>
             Back to the demo
           </a>
         </p>
