@@ -352,7 +352,10 @@ html.js [data-reveal="rise"]:not([data-in]):not(:has(> [data-reveal-child])) { t
 html.js [data-reveal="scale"]:not([data-in]):not(:has(> [data-reveal-child])) { transform: scale(0.96); }
 html.js [data-reveal="slide-left"]:not([data-in]):not(:has(> [data-reveal-child])) { transform: translateX(-24px); }
 html.js [data-reveal="slide-right"]:not([data-in]):not(:has(> [data-reveal-child])) { transform: translateX(24px); }
-html.js [data-reveal="clip"]:not([data-in]):not(:has(> [data-reveal-child])) { clip-path: inset(0 0 100% 0); opacity: 1; }
+/* The clip sits on the child, not the observed wrapper: Chrome's IntersectionObserver ignores a clipped target and never fires. */
+html.js [data-reveal="clip"]:not([data-in]):not(:has(> [data-reveal-child])) { opacity: 1; }
+html.js [data-reveal="clip"]:not([data-in]) > * { clip-path: inset(0 0 100% 0); }
+[data-reveal="clip"] > * { transition: clip-path var(--kit-dur) var(--kit-ease) var(--reveal-delay, 0ms); }
 
 [data-reveal] {
   transition:
@@ -383,7 +386,7 @@ html.js .draw-line--y:not([data-in]) { transform: scaleY(0); }
 .press:active { transform: translateY(1px) scale(0.98); }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal], [data-reveal] > [data-reveal-child], .draw-line {
+  [data-reveal], [data-reveal] > [data-reveal-child], [data-reveal="clip"] > *, .draw-line {
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
