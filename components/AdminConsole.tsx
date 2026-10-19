@@ -93,11 +93,17 @@ export function AdminConsole({ unanswered, conversations, faqs }: { unanswered: 
   const [session, setSession] = useState<Logged[]>([]);
   const [lastAdded, setLastAdded] = useState<string | null>(null);
   const [toReview, setToReview] = useState<number | null>(null);
+  const [toast, setToast] = useState<number | null>(null);
   const tabRefs = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
   const ready = useRef(false);
   useEffect(() => {
     ready.current = true;
   }, []);
+  useEffect(() => {
+    if (toast === null) return;
+    const t = window.setTimeout(() => setToast(null), 2400);
+    return () => window.clearTimeout(t);
+  }, [toast]);
 
   const inbox = unanswered.filter((u) => !hidden.has(u.id));
 
@@ -112,6 +118,7 @@ export function AdminConsole({ unanswered, conversations, faqs }: { unanswered: 
     hide(u.id);
     if (action === "add") {
       log(u.question, "Answered");
+      setToast(Date.now());
       setNotice({ text: `Added ${quoted(u.question)} to the FAQ. Customers get this answer from now on.`, at: Date.now() });
     } else {
       setNotice({ text: `Dismissed ${quoted(u.question)}. It won't be added to the FAQ.`, at: Date.now() });
@@ -156,7 +163,7 @@ export function AdminConsole({ unanswered, conversations, faqs }: { unanswered: 
   return (
     <div>
       <div className="max-w-full overflow-x-auto">
-        <div role="tablist" aria-label="Owner sections" onKeyDown={onTabKey} className="inline-flex gap-1 rounded-sm border border-rule-strong bg-sheet p-1">
+        <div role="tablist" aria-label="Owner sections" onKeyDown={onTabKey} className="flex gap-5 border-b border-rule sm:gap-7">
           {tabs.map((t) => {
             const on = tab === t.key;
             return (
@@ -171,8 +178,8 @@ export function AdminConsole({ unanswered, conversations, faqs }: { unanswered: 
                 aria-controls={on ? `panel-${t.key}` : undefined}
                 tabIndex={on ? 0 : -1}
                 onClick={() => select(t.key)}
-                className={`inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-xs px-2.5 font-mono text-[12px] font-medium uppercase tracking-[0.06em] transition-colors duration-150 sm:gap-2.5 sm:px-4 ${
-                  on ? "bg-ink text-paper" : "text-ink-2 hover:bg-paper hover:text-ink"
+                className={`relative inline-flex min-h-11 shrink-0 items-center gap-1.5 px-0.5 font-mono text-[12px] font-medium uppercase tracking-[0.06em] transition-colors duration-150 sm:gap-2.5 ${
+                  on ? "text-ink" : "text-ink-2 hover:text-ink"
                 }`}
               >
                 {t.short ? (
@@ -184,10 +191,11 @@ export function AdminConsole({ unanswered, conversations, faqs }: { unanswered: 
                   t.label
                 )}
                 {t.count !== null && (
-                  <span key={`${t.key}-${t.count}`} className={`count ${on && t.key !== "inbox" ? "bg-paper/20 text-paper" : t.tone} ${ready.current ? "anim-bump" : ""}`}>
+                  <span key={`${t.key}-${t.count}`} className={`count ${t.tone} ${ready.current ? "anim-bump" : ""}`}>
                     {t.count}
                   </span>
                 )}
+                <span aria-hidden="true" className={`absolute inset-x-0 -bottom-px h-0.5 transition-colors duration-150 ${on ? "bg-ink" : "bg-transparent"}`} />
               </button>
             );
           })}
@@ -215,6 +223,13 @@ export function AdminConsole({ unanswered, conversations, faqs }: { unanswered: 
           </div>
         )}
       </div>
+      {toast !== null && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center px-4">
+          <p key={toast} role="status" className="anim-rise rounded-sm bg-ink px-4 py-2.5 text-[14px] font-medium leading-5 text-paper shadow-lift">
+            Added to the FAQ
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -318,6 +333,21 @@ function Inbox({
 
       {items.length === 0 || !selected ? (
         <div className="max-w-[640px] border-t border-ink pt-6">
+          <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true" focusable="false" className="mb-5 text-moss">
+            <path d="M8 34h10l3 5h14l3-5h10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+            <path d="M10 34 16 12h24l6 22v8H10Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+            <path
+              className="empty-tick"
+              d="M22 26l4 4 8-9"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              pathLength={20}
+              strokeDasharray="20"
+            />
+          </svg>
           <h2 ref={emptyRef} tabIndex={-1} className="display text-[32px] leading-[36px]">
             Nothing waiting.
           </h2>
@@ -331,11 +361,15 @@ function Inbox({
               <span className="font-mono text-[12px] text-ink-2">{items.length}</span>
             </p>
             <ul aria-label="Open questions" onKeyDown={onListKey} className="divide-y divide-rule lg:max-h-[640px] lg:overflow-y-auto">
-              {items.map((u) => {
+              {items.map((u, idx) => {
                 const on = u.id === selected.id;
                 const hint = near.get(u.id);
                 return (
-                  <li key={u.id} className={`flex items-stretch transition-colors duration-150 ${on ? "bg-sheet shadow-[inset_2px_0_0_#B3501A]" : "hover:bg-sheet/60"}`}>
+                  <li
+                    key={u.id}
+                    style={{ ["--i" as string]: Math.min(idx, 6) }}
+                    className={`inbox-item flex items-stretch transition-colors duration-150 ${on ? "bg-sheet shadow-[inset_2px_0_0_#B3501A]" : "hover:bg-sheet"} ${animate ? "" : "anim-rise"}`}
+                  >
                     <button
                       ref={(el) => {
                         if (el) rowRefs.current.set(u.id, el);

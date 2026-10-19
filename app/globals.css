@@ -559,4 +559,15 @@ html.js .draw-line--y:not([data-in]) { transform: scaleY(0); }
     stroke-dashoffset: 20;
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Owner inbox: rows enter once on first load, 40 ms apart, capped at six. */
+  .inbox-item.anim-rise {
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+  /* Empty inbox: the tick draws once. */
+  .empty-tick {
+    animation: tick-draw 500ms var(--ease) 150ms both;
+  }
+}
 /* ===== End Sidekick polish ===== */
